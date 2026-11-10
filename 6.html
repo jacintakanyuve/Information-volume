@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Единицы информации - 6 класс</title>
+    <style>
+        /* =========================================
+           CYBER GLASSMORPHISM (DARK THEME)
+           ========================================= */
+        :root {
+            --bg-color: #0b0f19;
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ea;
+            --neon-green: #00ff66;
+            --neon-yellow: #ffea00;
+            --glass-bg: rgba(20, 25, 40, 0.6);
+            --glass-border: rgba(0, 243, 255, 0.25);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #00ff66;
+            --error: #ff0055;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 40px;
+        }
+
+        /* Фоновые неоновые сферы */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: float 12s infinite alternate ease-in-out;
+        }
+        .orb-1 { width: 300px; height: 300px; background: var(--neon-blue); top: -50px; left: -50px; }
+        .orb-2 { width: 350px; height: 350px; background: var(--neon-pink); bottom: -50px; right: -50px; animation-delay: -4s; }
+
+        @keyframes float {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.1) translate(30px, -30px); }
+        }
+
+        /* Glassmorphism классы */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* Шапка и Вкладки */
+        header {
+            width: 100%;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        h1 {
+            font-size: 1.6rem;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .tab-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--text-muted);
+            color: var(--text-muted);
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 243, 255, 0.15);
+            border-color: var(--neon-blue);
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px 10px;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Кнопка озвучки */
+        .btn-speak {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--neon-pink);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.2rem;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(255, 0, 234, 0.3);
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .btn-speak.playing {
+            background: var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink);
+            transform: scale(0.9);
+        }
+
+        /* === ВКЛАДКА 1: ИНТЕЛЛЕКТ-КАРТА === */
+        .card {
+            width: 95%;
+            margin-bottom: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 5px; height: 100%;
+            background: var(--neon-blue);
+        }
+
+        .card.kb::before { background: var(--neon-green); border-color: var(--neon-green);}
+        .card.mb::before { background: var(--neon-yellow); border-color: var(--neon-yellow);}
+        .card.gb::before { background: var(--neon-pink); border-color: var(--neon-pink);}
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        .analogy {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 1px dashed var(--text-muted);
+            font-style: italic;
+        }
+
+        /* === ВКЛАДКА 2: КОНВЕРТЕР === */
+        .converter-wrap {
+            width: 95%;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 1.1rem;
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        input[type="number"], select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--neon-blue);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.2rem;
+            outline: none;
+        }
+
+        button.calc-btn {
+            background: rgba(0, 243, 255, 0.2);
+            border: 2px solid var(--neon-blue);
+            color: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+            transition: all 0.2s;
+        }
+        button.calc-btn:active {
+            transform: scale(0.95);
+            background: var(--neon-blue);
+            color: #000;
+        }
+
+        .result-box {
+            background: rgba(0,255,102,0.1);
+            border: 1px solid var(--success);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+        .math-step {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        /* === ВКЛАДКА 3: ТЕСТ === */
+        .quiz-container {
+            width: 95%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-card {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            padding: 25px;
+        }
+        .question-card.active {
+            display: flex;
+            animation: fadeIn 0.4s;
+        }
+
+        .q-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .opt-btn {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--text-muted);
+            color: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .opt-btn:active { transform: scale(0.98); }
+        .opt-btn.correct { background: rgba(0,255,102,0.2); border-color: var(--success); box-shadow: 0 0 15px rgba(0,255,102,0.4); }
+        .opt-btn.wrong { background: rgba(255,0,85,0.2); border-color: var(--error); box-shadow: 0 0 15px rgba(255,0,85,0.4); }
+
+        .quiz-feedback {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-height: 30px;
+            text-align: center;
+        }
+
+        /* Canvas для конфетти */
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Неоновые фоновые элементы -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <!-- Холст для конфетти -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <header>
+        <h1>Информационный объём 💾</h1>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('tab-mindmap')">Карта знаний</button>
+            <button class="tab-btn" onclick="switchTab('tab-converter')">Конвертер</button>
+            <button class="tab-btn" onclick="switchTab('tab-quiz')">Мини-тест</button>
+        </div>
+    </header>
+
+    <!-- ВКЛАДКА 1: ИНТЕЛЛЕКТ-КАРТА -->
+    <main id="tab-mindmap" class="tab-content active">
+        
+        <div class="card glass">
+            <div class="card-header">
+                <div class="card-title" style="color: var(--neon-blue);">0/1 Бит</div>
+                <button class="btn-speak" onclick="speak('Бит — самая маленькая частица информации. Это как выключатель света: 0 - выключено, 1 - включено.', this)">🔊</button>
+            </div>
+            <div class="card-body">
+                Самая маленькая частица информации в компьютере. Может быть только <b>0</b> (ложь) или <b>1</b> (истина).
+                <div class="analogy">💡 <b>Аналогия:</b> Лампочка. Она либо горит (1), либо не горит (0).</div>
+            </div>
+        </div>
+
+        <div class="card glass">
+            <div class="card-header">
+                <div class="card-title" style="color: #fff;">🔤 Байт (Byte)</div>
+                <button class="btn-speak" onclick="speak('Байт состоит из восьми бит. Один байт — это ровно один символ текста, например буква А.', this)">🔊</button>
+            </div>
+            <div class="card-body">
+                <b>1 Байт = 8 бит.</b> Это стандартная "порция" информации для компьютера.
+                <div class="analogy">📝 <b>Аналогия:</b> Один символ текста. Буква "А", цифра "5" или пробел — каждый весит ровно 1 байт.</div>
+            </div>
+        </div>
+
+        <div class="card glass kb">
+            <div class="card-header">
+                <div class="card-title" style="color: var(--neon-green);">📄 Килобайт (Кб)</div>
+                <button class="btn-speak" onclick="speak('Килобайт равен 1024 байтам. Это примерно одна печатная страница текста.', this)">🔊</button>
+            </div>
+            <div class="card-body">
+                <b>1 Кб = 1024 байта.</b> В информатике приставка "кило" означает не 1000, а умножение на двойки (2 в 10 степени = 1024).
+                <div class="analogy">📖 <b>Аналогия:</b> Одна страница обычного текста в книге.</div>
+            </div>
+        </div>
+
+        <div class="card glass mb">
+            <div class="card-header">
+                <div class="card-title" style="color: var(--neon-yellow);">📚 Мегабайт (Мб)</div>
+                <button class="btn-speak" onclick="speak('Мегабайт — это 1024 килобайта. Сюда поместится целая толстая книга или одна песня.', this)">🔊</button>
+            </div>
+            <div class="card-body">
+                <b>1 Мб = 1024 Кб.</b> С этой величины начинается измерение фото и музыки.
+                <div class="analogy">🎒 <b>Аналогия:</b> Толстая книга на 1000 страниц или одна песня в телефоне.</div>
+            </div>
+        </div>
+
+        <div class="card glass gb">
+            <div class="card-header">
+                <div class="card-title" style="color: var(--neon-pink);">🏛️ Гигабайт (Гб)</div>
+                <button class="btn-speak" onclick="speak('Гигабайт — это 1024 мегабайта. Это огромная библиотека книг или качественный фильм.', this)">🔊</button>
+            </div>
+            <div class="card-body">
+                <b>1 Гб = 1024 Мб.</b> В гигабайтах измеряют память современных смартфонов (например, 128 Гб) и фильмы.
+                <div class="analogy">🎬 <b>Аналогия:</b> Огромная библиотека из тысяч книг или один фильм в хорошем качестве.</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ВКЛАДКА 2: КОНВЕРТЕР -->
+    <main id="tab-converter" class="tab-content">
+        <div class="converter-wrap glass">
+            <div class="input-group">
+                <label>1. Введи число:</label>
+                <input type="number" id="conv-num" placeholder="Например, 5" value="5" min="1">
+            </div>
+
+            <div class="input-group">
+                <label>2. Что это?</label>
+                <select id="conv-from">
+                    <option value="bit">Биты</option>
+                    <option value="byte" selected>Байты</option>
+                    <option value="kb">Килобайты (Кб)</option>
+                    <option value="mb">Мегабайты (Мб)</option>
+                    <option value="gb">Гигабайты (Гб)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>3. Во что перевести?</label>
+                <select id="conv-to">
+                    <option value="bit" selected>Биты</option>
+                    <option value="byte">Байты</option>
+                    <option value="kb">Килобайты (Кб)</option>
+                    <option value="mb">Мегабайты (Мб)</option>
+                    <option value="gb">Гигабайты (Гб)</option>
+                </select>
+            </div>
+
+            <button class="calc-btn" onclick="calculateConversion()">Перевести 🚀</button>
+
+            <div class="result-box" id="conv-result" style="display: none;">
+                <div id="res-main" style="font-weight: bold; color: var(--neon-blue);"></div>
+                <div id="res-math" class="math-step"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ВКЛАДКА 3: МИНИ-ТЕСТ -->
+    <main id="tab-quiz" class="tab-content">
+        <div class="quiz-container glass" id="quiz-wrap">
+            <!-- Вопросы инжектятся через JS -->
+        </div>
+        <div id="quiz-final" class="glass" style="display: none; padding: 30px; text-align: center; width: 95%;">
+            <h2 style="color: var(--neon-yellow); font-size: 2rem;">Готово! 🎉</h2>
+            <p style="font-size: 1.2rem; margin: 15px 0;">Правильных ответов: <span id="score-text" style="font-weight:bold; color:var(--neon-green);"></span> из 4</p>
+            <button class="calc-btn" onclick="initQuiz()">Пройти еще раз</button>
+        </div>
+    </main>
+
+    <script>
+        // === 1. НАВИГАЦИЯ (ВКЛАДКИ) ===
+        function switchTab(tabId) {
+            stopSpeech();
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // === 2. ОЗВУЧКА (WEB SPEECH API) ===
+        let synth = window.speechSynthesis;
+        let activeSpeakBtn = null;
+
+        function speak(text, btn) {
+            if (synth.speaking) {
+                synth.cancel();
+                if (activeSpeakBtn) activeSpeakBtn.classList.remove('playing');
+                if (activeSpeakBtn === btn) {
+                    activeSpeakBtn = null;
+                    return;
+                }
+            }
+
+            activeSpeakBtn = btn;
+            btn.classList.add('playing');
+
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'ru-RU';
+            utterance.rate = 1.0; 
+            utterance.pitch = 1.1;
+
+            utterance.onend = () => {
+                btn.classList.remove('playing');
+                activeSpeakBtn = null;
+            };
+            utterance.onerror = () => {
+                btn.classList.remove('playing');
+                activeSpeakBtn = null;
+            };
+
+            synth.speak(utterance);
+        }
+
+        function stopSpeech() {
+            if (synth.speaking) {
+                synth.cancel();
+                if (activeSpeakBtn) activeSpeakBtn.classList.remove('playing');
+                activeSpeakBtn = null;
+            }
+        }
+
+        // === 3. КОНВЕРТЕР (ЛОГИКА) ===
+        const units = {
+            bit: { name: 'Бит', val: 1 },
+            byte: { name: 'Байт', val: 8 },
+            kb: { name: 'Кб', val: 8 * 1024 },
+            mb: { name: 'Мб', val: 8 * 1024 * 1024 },
+            gb: { name: 'Гб', val: 8 * 1024 * 1024 * 1024 }
+        };
+
+        function calculateConversion() {
+            const num = parseFloat(document.getElementById('conv-num').value);
+            const fromKey = document.getElementById('conv-from').value;
+            const toKey = document.getElementById('conv-to').value;
+            
+            const resBox = document.getElementById('conv-result');
+            const resMain = document.getElementById('res-main');
+            const resMath = document.getElementById('res-math');
+
+            if (isNaN(num) || num <= 0) {
+                resBox.style.display = 'flex';
+                resBox.style.borderColor = 'var(--error)';
+                resMain.innerText = 'Пожалуйста, введи правильное число!';
+                resMath.innerText = '';
+                return;
+            }
+
+            resBox.style.display = 'flex';
+            resBox.style.borderColor = 'var(--success)';
+
+            if (fromKey === toKey) {
+                resMain.innerText = `${num} ${units[fromKey].name} = ${num} ${units[toKey].name}`;
+                resMath.innerText = 'Ничего не нужно переводить 😉';
+                return;
+            }
+
+            // Переводим исходное в биты, затем делим на цель
+            const inBits = num * units[fromKey].val;
+            const result = inBits / units[toKey].val;
+
+            resMain.innerText = `${num} ${units[fromKey].name} = ${result} ${units[toKey].name}`;
+
+            // Генерируем "математический путь" для детей
+            let mathString = '';
+            if (fromKey === 'byte' && toKey === 'bit') mathString = `${num} * 8 = ${result}`;
+            else if (fromKey === 'bit' && toKey === 'byte') mathString = `${num} / 8 = ${result}`;
+            else if (fromKey === 'kb' && toKey === 'byte') mathString = `${num} * 1024 = ${result}`;
+            else if (fromKey === 'mb' && toKey === 'kb') mathString = `${num} * 1024 = ${result}`;
+            else if (fromKey === 'gb' && toKey === 'mb') mathString = `${num} * 1024 = ${result}`;
+            else if (units[fromKey].val > units[toKey].val) {
+                mathString = `Умножаем на переходные числа (8, 1024...)`;
+            } else {
+                mathString = `Делим на переходные числа (8, 1024...)`;
+            }
+
+            resMath.innerText = `Как посчитали: ${mathString}`;
+        }
+
+        // === 4. МИНИ-ТЕСТ ===
+        const qs = [
+            {
+                q: "Сколько бит в одном байте?",
+                opts: [{ t: "10", c: false }, { t: "8", c: true }, { t: "1024", c: false }]
+            },
+            {
+                q: "Какая единица измерения информации самая маленькая?",
+                opts: [{ t: "Байт", c: false }, { t: "Килобайт", c: false }, { t: "Бит", c: true }]
+            },
+            {
+                q: "Слово 'КОТ' состоит из 3 букв. Сколько байт оно весит?",
+                opts: [{ t: "3 байта", c: true }, { t: "24 байта", c: false }, { t: "1 байт", c: false }]
+            },
+            {
+                q: "Почему в информатике используют число 1024, а не 1000?",
+                opts: [
+                    { t: "Так захотели программисты", c: false },
+                    { t: "Потому что компьютеры считают двойками (степени числа 2)", c: true },
+                    { t: "Это математическая ошибка", c: false }
+                ]
+            }
+        ];
+
+        let score = 0;
+        let answeredQuestions = new Set();
+
+        function initQuiz() {
+            score = 0;
+            answeredQuestions.clear();
+            document.getElementById('quiz-final').style.display = 'none';
+            const wrap = document.getElementById('quiz-wrap');
+            wrap.innerHTML = '';
+            wrap.style.display = 'flex';
+
+            qs.forEach((q, i) => {
+                const card = document.createElement('div');
+                card.className = 'question-card glass';
+                if (i === 0) card.classList.add('active');
+                card.id = `q-card-${i}`;
+
+                card.innerHTML = `<div class="q-text">Вопрос ${i + 1}/4:<br>${q.q}</div>`;
+
+                const optsDiv = document.createElement('div');
+                optsDiv.style.display = 'flex';
+                optsDiv.style.flexDirection = 'column';
+                optsDiv.style.gap = '10px';
+
+                const feedback = document.createElement('div');
+                feedback.className = 'quiz-feedback';
+
+                q.opts.forEach((opt, optIndex) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'opt-btn';
+                    btn.innerText = opt.t;
+                    btn.onclick = () => handleAnswer(btn, optsDiv, opt.c, feedback, i);
+                    optsDiv.appendChild(btn);
+                });
+
+                card.appendChild(optsDiv);
+                card.appendChild(feedback);
+                wrap.appendChild(card);
+            });
+        }
+
+        function handleAnswer(btn, optsDiv, isCorrect, feedback, qIndex) {
+            if(answeredQuestions.has(qIndex)) return;
+            answeredQuestions.add(qIndex);
+
+            // Блокируем кнопки
+            Array.from(optsDiv.children).forEach(b => b.style.pointerEvents = 'none');
+
+            if(isCorrect) {
+                btn.classList.add('correct');
+                feedback.innerText = "✅ Верно!";
+                feedback.style.color = "var(--success)";
+                score++;
+                fireConfetti(30); // Запуск конфетти при правильном ответе
+            } else {
+                btn.classList.add('wrong');
+                feedback.innerText = "❌ Ошибка!";
+                feedback.style.color = "var(--error)";
+                // Показ правильного
+                Array.from(optsDiv.children).forEach((b, idx) => {
+                    if(qs[qIndex].opts[idx].c) b.classList.add('correct');
+                });
+            }
+
+            setTimeout(() => {
+                document.getElementById(`q-card-${qIndex}`).classList.remove('active');
+                if (qIndex + 1 < qs.length) {
+                    document.getElementById(`q-card-${qIndex + 1}`).classList.add('active');
+                } else {
+                    showFinalQuiz();
+                }
+            }, 1500);
+        }
+
+        function showFinalQuiz() {
+            document.getElementById('quiz-wrap').style.display = 'none';
+            document.getElementById('quiz-final').style.display = 'block';
+            document.getElementById('score-text').innerText = score;
+            
+            if (score === qs.length) {
+                fireConfetti(150); // Гранд-финал конфетти
+                let msg = new SpeechSynthesisUtterance("Молодец! Идеальный результат!");
+                msg.lang = 'ru-RU';
+                synth.speak(msg);
+            }
+        }
+
+        initQuiz();
+
+        // === 5. CANVAS КОНФЕТТИ (АЛГОРИТМ НА ЧИСТОМ JS) ===
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrame;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = canvas.width / 2;
+                this.y = canvas.height + 10;
+                // Раскидываем в стороны
+                this.vx = (Math.random() - 0.5) * 20; 
+                this.vy = -(Math.random() * 15 + 10); // Вверх
+                this.size = Math.random() * 8 + 5;
+                this.color = ['#00f3ff', '#ff00ea', '#00ff66', '#ffea00'][Math.floor(Math.random() * 4)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = (Math.random() - 0.5) * 10;
+                this.gravity = 0.5;
+                this.drag = 0.98;
+                this.opacity = 1;
+            }
+
+            update() {
+                this.vx *= this.drag;
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+                // Плавно исчезает, когда падает вниз
+                if (this.vy > 0) this.opacity -= 0.01;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(this.opacity, 0);
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.fillStyle = this.color;
+                // Рисуем квадратик
+                ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                ctx.restore();
+            }
+        }
+
+        function fireConfetti(amount) {
+            for (let i = 0; i < amount; i++) {
+                particles.push(new Particle());
+            }
+            if (!animationFrame) loop();
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.opacity <= 0 || p.y > canvas.height + 50) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                animationFrame = requestAnimationFrame(loop);
+            } else {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+        }
+
+    </script>
+</body>
+</html>
